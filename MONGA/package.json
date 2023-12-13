@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "monga": "nodemon monga.py",
+    "movingball": "nodemon movingball.py"
+  },
+  "dependencies": {
+    "nodemon": "^3.0.2"
+  }
+}

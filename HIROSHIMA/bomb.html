@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa - BOMBA HIROSHIMA</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body { margin: 0; padding: 0; }
+
+        #map { height: calc(100vh); } /* Ajuste de altura para permitir espaço para os botões */
+        #altitude { position: absolute; top: 10px; left: 10px; background: white; padding: 5px; border-radius: 5px; }
+
+        #zoomButtons { position: absolute; top: 10px; left: 10px; z-index: 1000; }
+        #zoomButtons button { margin-bottom: 5px; }
+    </style>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+
+</head>
+<body>
+
+<div id="map"></div>
+<div id="altitude"></div>
+<div id="zoomButtons" style="display: none;">
+    <button id="zoomInBtn">Zoom In</button>
+    <button id="zoomOutBtn">Zoom Out</button>
+</div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+    var quissamaCoordinates = [-22.1060, -41.4730];
+    var altitude = 30; 
+    var map = L.map('map').setView(quissamaCoordinates, 18);
+    console.log(altitude+' metros');
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+    L.control.scale().addTo(map)
+
+    map.on('zoomend', function () {
+        document.getElementById('altitude').innerHTML = 'Altitude: ' + altitude.toFixed(2) + ' metros';
+        console.log(altitude.toFixed(2)+' metros');
+    });
+
+    document.getElementById('zoomInBtn').addEventListener('click', function () {
+        altitude -= 30; 
+        map.zoomIn();
+    });
+
+    document.getElementById('zoomOutBtn').addEventListener('click', function () {
+        altitude += 30; 
+        map.zoomOut();
+    });
+
+    var bombMarker = null;
+
+map.on('click', function (event) {
+    map.eachLayer(layer => {
+        if (layer instanceof L.Circle || (layer instanceof L.Marker && layer !== bombMarker)) {
+            map.removeLayer(layer);
+        }
+    });
+
+    L.circle(event.latlng, {
+        color: 'black',
+        fillOpacity: 0.5,
+        radius: 200
+    }).addTo(map);
+    L.circle(event.latlng, {
+       fillColor: 'black',
+        color: 'gray',
+        fillColor: 'gray',
+        fillOpacity: 0.5,
+        radius: 4700
+    }).addTo(map);
+   L.circle(event.latlng, {
+        color: 'red',
+        fillColor: 'red',
+        fillOpacity: 0.6,
+        radius: 2000
+    }).addTo(map);
+
+    if (bombMarker) {
+        map.removeLayer(bombMarker);
+    }
+
+    var bombIcon = L.icon({
+        iconUrl: 'https://img.nuclearsecrecy.com/nukemap_marker.svg',
+        iconSize: [30, 30],
+        iconAnchor: [15, 15],
+        popupAnchor: [0, 0],
+    });
+
+    bombMarker = L.marker(event.latlng, { icon: bombIcon }).addTo(map);
+});
+
+
+ 
+
+
+    var bombImage = L.imageOverlay('https://img.nuclearsecrecy.com/nukemap_marker.svg', event.latlng, { zoomAnimation: false, attribution: 'Image Attribution' }).addTo(map);
+
+    map.on('move', function () {
+        bombImage.setLatLng(map.getCenter());
+    });
+
+
+</script>
+
+</body>
+</html>
