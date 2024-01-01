@@ -1,7 +1,8 @@
 {
   "scripts": {
-    "monga": "nodemon monga.py",
-    "movingball": "nodemon movingball.py"
+    "monga": "nodemon --exec python3 monga.py",
+    "colloredlights": "nodemon --exec python3 circo/colloredlights.py",
+    "movingball": "nodemon --exec python3 movingball.py"
   },
   "dependencies": {
     "nodemon": "^3.0.2"
